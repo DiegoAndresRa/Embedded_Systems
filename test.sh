@@ -3,8 +3,8 @@
 # GPIO utilizados para generar numero
 GPIO_0=26
 GPIO_1=19
-GPIO_2=5
-GPIO_3=6
+GPIO_2=6
+GPIO_3=5
 GPIO_4=9
 GPIO_5=10
 GPIO_6=22
@@ -49,7 +49,7 @@ if [ "$1" == "valor" ]; then
         let numero=bit0+bit1+bit2+bit3+bit4+bit5+bit6+bit7
         for num in {0..7};do
             bit="bit$num"
-            echo ${!bit}
+            echo -n ${!bit} >> out
         done
-        echo $numero
+	echo " = $numero" >> out
 fi
