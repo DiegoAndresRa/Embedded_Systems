@@ -1,14 +1,14 @@
 #!/bin/bash
 
 # GPIO utilizados para generar numero
-GPIO_0=27
-GPIO_1=22
-GPIO_2=26
-GPIO_3=19
-GPIO_4=6
-GPIO_5=5
-GPIO_6=9
-GPIO_7=10
+GPIO_0=26
+GPIO_1=19
+GPIO_2=6
+GPIO_3=5
+GPIO_4=9
+GPIO_5=10
+GPIO_6=22
+GPIO_7=27
 
 # En caso que no se pase algun valor
 if [ $# -ne 1 ]; then   # si no hay argumento
@@ -47,6 +47,7 @@ if [ "$1" == "valor" ]; then
         bit6=$(cat "/sys/class/gpio/gpio$GPIO_6/value")
         bit7=$(cat "/sys/class/gpio/gpio$GPIO_7/value")
         let numero=(bit0+bit1+bit2+bit3+bit4+bit5+bit6+bit7)
-        echo "$(date +%H:%M:%S:%N)" >> bash_time.txt
+        echo "$(date +%H:%M:%S:%N)" >> times.txt
+	echo "$numero" >> amplitudes.txt
     done
 fi
