@@ -5,7 +5,7 @@
 #include<time.h>
 
 int main(int argc, char** argv){
-    const char* GPIOS[8] = {"27","22","26","19","6","5","9","10"};
+    const char* GPIOS[8] = {"26","19","6","5","9","10","22","27"};
 
     if(argc <= 1){
         printf("No hay comandos\n");
@@ -38,18 +38,14 @@ int main(int argc, char** argv){
             fclose(dir);
         }
         fclose(exp);
-    }
-
-    if(strcmp(argv[1],"cerrar") == 0){
+    } else if(strcmp(argv[1],"cerrar") == 0){
         FILE* unexp = fopen("/sys/class/gpio/unexport","a");
         for(int i=0;i<8;i++){
             printf("Cerrando el GPIO %s\n",GPIOS[i]);
             fprintf(unexp,"%s",GPIOS[i]);
         }
         fclose(unexp);
-    }
-
-    if(strcmp(argv[1],"valor")){
+    }else if(strcmp(argv[1],"valor") == 0){
         struct timespec ts;
         FILE* pin = NULL;
         FILE* amplitudes = NULL;
@@ -57,16 +53,18 @@ int main(int argc, char** argv){
         char bits[8][29];
         int numero = 0;
         char* amplitud = (char*)calloc(10,sizeof(char));
-        char* hhmmss = (char*)calloc(8,sizeof(char));
+        char* hhmmss = (char*)calloc(9,sizeof(char));
         char* time = (char*)calloc(20,sizeof(char));
 
         for(int i=0;i<8;i++)
             snprintf(bits[i],sizeof(bits[i]),"/sys/class/gpio/gpio%s/value",GPIOS[i]);
 
         for(int i=0;i<100;i++){
-            amplitudes = fopen("c_amplitudes.txt","w");
-            times = fopen("c_times.txt","w");
+	    numero = 0;
+            amplitudes = fopen("amplitudes.txt","a");
+            times = fopen("times.txt","a");
             // get number
+	    usleep(100000);
             for(int i=0;i<8;i++){
                 pin = fopen(bits[i],"r");
                 fscanf(pin,"%s",amplitud);
@@ -75,11 +73,11 @@ int main(int argc, char** argv){
             }
             // get time
             clock_gettime(CLOCK_REALTIME, &ts);
-            strftime(hhmmss, 8, "%T", localtime(&ts.tv_sec));
-            snprintf(time,20,"%s:%09ld", hhmmss, ts.tv_nsec);
+            strftime(hhmmss, 9, "%X", localtime(&ts.tv_sec));
+	    snprintf(time,20,"%s:%09ld", hhmmss, ts.tv_nsec);
             
-            fprintf(times,"%s",time);
-            fprintf(amplitudes,"%d",numero);
+            fprintf(times,"%s\n",time);
+            fprintf(amplitudes,"%d\n",numero);
         } 
         fclose(amplitudes);
         fclose(times);
