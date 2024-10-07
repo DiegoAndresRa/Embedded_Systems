@@ -16,14 +16,20 @@ fi
 
 registros=($(cat $read_file))
 
+nano_per_seg=1000000000
+
 # Read 101 rows to obtain and write 100 differences.
-for reg in {0..99};do 
-    item1=$(echo "${registros[$reg]}" | awk -F: '{print $NF}' | sed 's/^0*//')
-    item2=$(echo "${registros[$reg+1]}" | awk -F: '{print $NF}' | sed 's/^0*//')
+for reg in {0..98};do 
+    seg1=$(echo "${registros[$reg]}" | awk -F: '{print $3}' | sed 's/^0*//')
+    seg2=$(echo "${registros[$reg+1]}" | awk -F: '{print $3}' | sed 's/^0*//')
     
-    if [ $item2 -lt $item1 ];then
-	    echo $(( 1000000000 - $item1 + $item2 )) >> $write_file
+    nano1=$(echo "${registros[$reg]}" | awk -F: '{print $NF}' | sed 's/^0*//')
+    nano2=$(echo "${registros[$reg+1]}" | awk -F: '{print $NF}' | sed 's/^0*//')
+    
+    if [ $seg1 -eq $seg2 ];then
+	    echo $(( $nano2 - $nano1 )) >> $write_file
     else
-	    echo $(( $item2 - $item1 )) >> $write_file
+        echo $(( $nano_per_seg - $nano1 + $nano2 )) >> $write_file
     fi
+
 done
