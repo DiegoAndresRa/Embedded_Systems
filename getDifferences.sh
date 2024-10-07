@@ -9,6 +9,7 @@ if [[ $# -eq 0 || $# -lt 2 || $# -gt 2 ]];then
 else
     read_file=$1
     write_file=$2
+    rm $write_file
 
     echo "Reading from -> $read_file"
     echo "Writting to -> $write_file"
