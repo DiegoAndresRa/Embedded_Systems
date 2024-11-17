@@ -17,11 +17,7 @@ void setup() {
 }
 
 void loop() {
-  valor = 0;
-  for(i=0; i<=7; i++){
-    int valori= digitalRead(pines[i]);
-    valor += valori;
-  }
+  valor = digitalRead(2) + digitalRead(3)*2 + digitalRead(4)*4 + digitalRead(5)*8 + digitalRead(6)*16 + digitalRead(7)*32 + digitalRead(8)*64 + digitalRead(9)*128; 
 }
 
 // SPI interrupt routine

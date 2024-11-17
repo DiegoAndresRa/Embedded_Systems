@@ -1,4 +1,5 @@
-from datetime import datetime
+#!/usr/bin/python3
+import time
 import serial
 
 def main():
@@ -11,20 +12,32 @@ def main():
     amplitudes = open("amplitudes.txt", "w")
 
 
-    while count > 0:
+    while count < 1000:
         if ser.in_waiting > 0:
-            bg = datetime.now() 
+            print('.', end='')
+            bg = time.time()
+            line = ser.readline().rstrip()
             
-            line = ser.readline().decode('utf-8').rstrip()
+            if line:
+                try:
+                    amplitude = float(line.decode('utf-8'))
+                    amplitudes.write("{:.8}".format(amplitude) + '\n')
+                except ValueError:
+                    pass
+            else:
+                pass
 
-            end = datetime.now()
+            end = time.time()
             
-            amplitudes.write(line)
-            times.write(str(bg-end)[9:])
-            
+            t = end-bg
+            decimal = t - int(t)
+            print(decimal)
+            times.write("{:0>10}".format(str(round(decimal, 9))[2:])+'\n')
             count += 1
-            
-    
+
+        ser.reset_input_buffer()
+
+    print()
     times.close()
     amplitudes.close()
 

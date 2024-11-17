@@ -33,19 +33,24 @@ int main (int argc, char **argv){
     timespec ts;
 
     while(count < 1000){
-        // Toma de tiempo inicial
-        auto begin = chrono::high_resolution_clock::now();
         // Read data from arduino
         received_data = wiringPiI2CRead(fd);
-        // Toma de tiempo final
-        auto end = chrono::high_resolution_clock::now();
-        // Calcular el tiempo transcurrido en nanosegundos
-        auto elapsed = chrono::duration_cast<chrono::nanoseconds>(end - begin).count();
+        
+        // getting time
+        clock_gettime(CLOCK_REALTIME, &ts);
+        char hhmmss[9];
+        strftime(hhmmss, sizeof(hhmmss), "%X", localtime(&ts.tv_sec));
+	    usleep(500);
+        std::ostringstream oss;
+        oss << hhmmss << ":" << std::setw(9) << std::setfill('0') << ts.tv_nsec;
+        std::string time = oss.str();
+        
+        // Write data
+        times << time << endl;
+        
         // Write data
         data << "" << received_data << endl;
         count ++;
-        // Write time
-        times << elapsed << endl;
     }
     data.close();
     times.close();
